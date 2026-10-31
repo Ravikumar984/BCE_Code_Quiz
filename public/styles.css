@@ -40,16 +40,24 @@ body {
 
 /* Enhanced College Logo Styles */
 .header-college-logo { 
-  height: 26px; 
+  height: 28px; /* Slightly larger for better default visibility */
   width: auto; 
-  filter: grayscale(1) opacity(0.7); 
-  margin-left: 4px; 
-  transition: all 0.3s ease;
+  margin-left: 6px; 
+  opacity: 0.95; /* Always visible */
   border-radius: 4px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* A subtle green drop-shadow to blend with the cyberpunk theme */
+  filter: drop-shadow(0 0 3px rgba(181, 255, 93, 0.25));
 }
+
 .header-college-logo:hover { 
-  filter: grayscale(0) opacity(1); 
-  box-shadow: 0 0 12px rgba(181, 255, 93, 0.4);
+  opacity: 1; 
+  transform: scale(1.08); /* Sleek zoom effect */
+  filter: drop-shadow(0 0 10px rgba(181, 255, 93, 0.7)); /* Brighter glow on hover */
+}
+
+@media (max-width: 560px) {
+  .header-college-logo { height: 22px; }
 }
 
 .shell { width: min(100% - 40px, 920px); margin: 0 auto; flex: 1; padding: 70px 0 64px; position: relative; z-index: 1; }
