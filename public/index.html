@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0e11">
+  <title>BUZZ//CTRL — Team Portal</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="scanline"></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Buzz Control home">
+      <span class="brand-mark">{"}"}</span><span>BUZZ<span class="slash">//</span>CTRL</span>
+    </a>
+    <div class="top-meta"><span class="live-dot"></span><span id="connection-label">CONNECTING</span><span class="meta-divider">/</span><span id="round-label">ROUND 01</span></div>
+  </header>
+
+  <main class="shell">
+    <section id="join-screen" class="join-layout">
+      <div class="eyebrow"><span class="eyebrow-line"></span> LIVE QUIZ PROTOCOL <span class="muted">v1.0</span></div>
+      <h1>Ready.<br><span class="outline-text">Set.</span> <span class="accent-text">Buzz.</span></h1>
+      <p class="intro">Enter your team handle to connect to the room. No password. No delay. Just reflexes.</p>
+      <form id="join-form" class="join-form">
+        <label for="team-name">TEAM IDENTIFIER</label>
+        <div class="input-row">
+          <span class="input-prefix">team://</span>
+          <input id="team-name" name="team-name" maxlength="32" autocomplete="off" placeholder="e.g. NullPointers" required>
+        </div>
+        <button class="button button-primary join-button" type="submit"><span>JOIN THE ROOM</span><span class="button-arrow">↗</span></button>
+        <p id="join-error" class="error-message" role="alert"></p>
+      </form>
+      <div class="join-foot"><span><span class="tiny-square"></span> OPEN SESSION</span><span>NO CREDENTIALS REQUIRED</span></div>
+    </section>
+
+    <section id="team-screen" class="team-layout hidden">
+      <div class="team-heading">
+        <div>
+          <div class="eyebrow"><span class="eyebrow-line"></span> CONNECTED TEAM</div>
+          <h2 id="welcome-team">Team name</h2>
+        </div>
+        <button id="leave-button" class="button button-quiet" type="button">LEAVE SESSION ↗</button>
+      </div>
+
+      <div class="buzzer-panel">
+        <div class="panel-topline"><span>INPUT // BUZZER</span><span id="buzzer-state" class="state-pill"><span class="state-dot"></span> ARMED</span></div>
+        <button id="buzz-button" class="buzzer-button" type="button" aria-label="Press buzzer">
+          <span class="buzzer-ring"></span>
+          <span class="bell-glyph">♢</span>
+          <span class="buzzer-label">PRESS TO BUZZ</span>
+          <span class="buzzer-sub">FIRST PRESS COUNTS</span>
+        </button>
+        <p id="buzz-feedback" class="buzz-feedback" aria-live="polite">Waiting for the host to read the question.</p>
+      </div>
+
+      <section class="ranking-section">
+        <div class="section-head"><div><span class="section-index">01 /</span> LIVE ORDER</div><span id="buzz-count" class="count-label">0 TEAMS BUZZED</span></div>
+        <div id="ranking-list" class="ranking-list"><div class="empty-state"><span class="empty-icon">⌁</span><span>No buzzes yet.</span><small>Be ready when the question drops.</small></div></div>
+      </section>
+      <p class="fine-print"><span class="live-dot"></span> This screen updates in real time. Keep this tab open during the round.</p>
+    </section>
+  </main>
+
+  <footer class="footer"><span>BUZZ//CTRL <span class="muted">© LIVE SESSION</span></span><span>BUILT FOR QUICK THINKERS <span class="accent-text">■</span></span></footer>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/team.js"></script>
+</body>
+</html>
