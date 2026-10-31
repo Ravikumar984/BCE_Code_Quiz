@@ -9,7 +9,9 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <div class="scanline"></div>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="scanline" aria-hidden="true"></div>
+
   <header class="topbar">
     <a href="/" aria-label="Team portal" class="brand-link">
       <img src="logo2.png" alt="BUZZ//CTRL" class="header-logo">
@@ -23,47 +25,80 @@
       <img src="bce_logo.png" alt="BCE Logo" class="header-college-logo">
     </div>
   </header>
+
   <main class="shell host-shell">
+    <!-- AUTH -->
     <section id="auth-screen" class="auth-panel">
       <div class="eyebrow"><span class="eyebrow-line"></span> RESTRICTED ACCESS</div>
       <h1>Host<br><span class="accent-text">console.</span></h1>
       <p class="intro">Enter the host PIN to manage the live quiz session.</p>
+
       <form id="host-form" class="join-form">
         <label for="host-pin">HOST PIN</label>
-        <div class="input-row"><span class="input-prefix">key://</span><input id="host-pin" type="password" autocomplete="current-password" placeholder="Enter host PIN" required></div>
-        <button class="button button-primary join-button" type="submit"><span>UNLOCK CONSOLE</span><span class="button-arrow">↗</span></button>
+        <div class="input-row">
+          <span class="input-prefix">key://</span>
+          <input id="host-pin" type="password" autocomplete="current-password" placeholder="Enter host PIN" required>
+        </div>
+        <button class="button button-primary join-button" type="submit">
+          <span>UNLOCK CONSOLE</span><span class="button-arrow">↗</span>
+        </button>
         <p id="auth-error" class="error-message" role="alert"></p>
       </form>
+
       <p class="fine-print">Set <code>HOST_PIN</code> in your <code>.env</code> file before launch.</p>
     </section>
 
+    <!-- CONSOLE -->
     <section id="host-screen" class="hidden">
       <div class="host-title-row">
-        <div><div class="eyebrow"><span class="eyebrow-line"></span> CONTROL ROOM</div><h1>Round <span id="host-round">01</span><span class="accent-text">.</span></h1></div>
+        <div>
+          <div class="eyebrow"><span class="eyebrow-line"></span> CONTROL ROOM</div>
+          <h1>Round <span id="host-round">01</span><span class="accent-text">.</span></h1>
+        </div>
         <span id="round-status" class="state-pill"><span class="state-dot"></span> ROUND OPEN</span>
       </div>
+
       <div class="host-stats">
         <div class="stat-card"><span>TEAMS CONNECTED</span><strong id="team-total">0</strong></div>
         <div class="stat-card"><span>BUZZES LOGGED</span><strong id="buzz-total">0</strong></div>
         <div class="stat-card"><span>ROUND STATUS</span><strong id="status-value">OPEN</strong></div>
       </div>
+
       <div class="host-actions">
         <button id="toggle-round" class="button button-secondary" type="button">CLOSE BUZZER</button>
         <button id="next-round" class="button button-primary" type="button">NEXT ROUND ↗</button>
         <button id="reset-all" class="button button-danger" type="button">RESET COMPETITION</button>
       </div>
+
       <section class="ranking-section host-ranking">
-        <div class="section-head"><div><span class="section-index">01 /</span> BUZZER ORDER</div><span id="host-buzz-count" class="count-label">0 ENTRIES</span></div>
-        <div id="host-ranking-list" class="ranking-list"><div class="empty-state"><span class="empty-icon">⌁</span><span>No buzzes yet.</span></div></div>
+        <div class="section-head">
+          <div><span class="section-index">01 /</span> BUZZER ORDER</div>
+          <span id="host-buzz-count" class="count-label">0 ENTRIES</span>
+        </div>
+        <div id="host-ranking-list" class="ranking-list">
+          <div class="empty-state"><span class="empty-icon">⌁</span><span>No buzzes yet.</span></div>
+        </div>
       </section>
+
       <section class="connected-teams">
-        <div class="section-head"><div><span class="section-index">02 /</span> REGISTERED TEAMS</div><span id="registered-count" class="count-label">0 TEAMS</span></div>
-        <div id="registered-teams" class="team-chips"><span class="muted">Waiting for teams to join…</span></div>
+        <div class="section-head">
+          <div><span class="section-index">02 /</span> REGISTERED TEAMS</div>
+          <span id="registered-count" class="count-label">0 TEAMS</span>
+        </div>
+        <div id="registered-teams" class="team-chips">
+          <span class="muted">Waiting for teams to join…</span>
+        </div>
       </section>
+
       <p class="fine-print"><span class="live-dot"></span> Host actions update all connected screens immediately.</p>
     </section>
   </main>
-  <footer class="footer"><span>BUZZ//CTRL <span class="muted">HOST CONSOLE</span></span><span>ADMIN ACCESS <span class="accent-text">■</span></span></footer>
+
+  <footer class="footer">
+    <span>BUZZ//CTRL <span class="muted">HOST CONSOLE</span></span>
+    <span>ADMIN ACCESS <span class="accent-text">■</span></span>
+  </footer>
+
   <script src="/socket.io/socket.io.js"></script>
   <script src="/host.js"></script>
 </body>

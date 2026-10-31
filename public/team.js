@@ -5,6 +5,67 @@ let currentTeam = "";
 let hasBuzzed = false;
 let latestState = null;
 
+/* ---------- Sound & flash ---------- */
+let audioCtx = null;
+
+function getAudio() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+  } catch (_) {
+    audioCtx = null;
+  }
+  return audioCtx;
+}
+
+function tone(freq, start, dur, type = "sine", vol = 0.16) {
+  const ctx = getAudio();
+  if (!ctx) return;
+  const t0 = ctx.currentTime + start;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  gain.gain.setValueAtTime(0.0001, t0);
+  gain.gain.exponentialRampToValueAtTime(vol, t0 + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(t0);
+  osc.stop(t0 + dur + 0.05);
+}
+
+function flash(kind) {
+  const el = document.createElement("div");
+  el.className = `screen-flash ${kind}`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 750);
+}
+
+function vibrate(pattern) {
+  try { navigator.vibrate?.(pattern); } catch (_) {}
+}
+
+function playFirst() {
+  tone(660, 0.00, 0.12, "square", 0.10);
+  tone(880, 0.10, 0.12, "square", 0.10);
+  tone(1320, 0.20, 0.30, "triangle", 0.18);
+  flash("first");
+  vibrate([60, 40, 120]);
+}
+
+function playOk() {
+  tone(700, 0, 0.14, "triangle", 0.16);
+  flash("ok");
+  vibrate(40);
+}
+
+function playDeny() {
+  tone(180, 0, 0.22, "sawtooth", 0.10);
+  flash("deny");
+  vibrate([30, 30, 30]);
+}
+
+/* ---------- Connection / screens ---------- */
 function setConnection(connected) {
   $("connection-label").textContent = connected ? "CONNECTED" : "RECONNECTING";
   $("connection-label").previousElementSibling.style.background = connected ? "var(--green)" : "var(--red)";
@@ -25,6 +86,7 @@ function showTeam() {
 
 $("join-form").addEventListener("submit", (event) => {
   event.preventDefault();
+  getAudio(); // unlock audio on a user gesture
   const name = $("team-name").value.trim();
   if (!name) return;
   $("join-error").textContent = "";
@@ -40,6 +102,7 @@ $("join-form").addEventListener("submit", (event) => {
 });
 
 $("buzz-button").addEventListener("click", () => {
+  getAudio(); // make sure audio is ready before the result comes back
   if (!currentTeam || hasBuzzed || !latestState?.roundOpen) return;
   $("buzz-button").disabled = true;
   $("buzz-feedback").textContent = "SIGNAL SENT…";
@@ -67,9 +130,11 @@ socket.on("buzz-result", (result) => {
     hasBuzzed = true;
     $("buzz-feedback").textContent = `LOCKED IN — YOU ARE #${result.rank}`;
     $("buzz-feedback").className = "buzz-feedback success";
+    result.rank === 1 ? playFirst() : playOk();
   } else {
     $("buzz-feedback").textContent = result.message || "Buzz not accepted.";
     $("buzz-feedback").className = "buzz-feedback warning";
+    playDeny();
   }
   renderState(latestState);
 });

@@ -2,7 +2,56 @@ const socket = io();
 const $ = (id) => document.getElementById(id);
 let latestState = null;
 let authenticated = false;
+let lastBuzzCount = 0;
 
+/* ---------- Sound & flash ---------- */
+let audioCtx = null;
+
+function getAudio() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+  } catch (_) {
+    audioCtx = null;
+  }
+  return audioCtx;
+}
+
+function tone(freq, start, dur, type = "sine", vol = 0.16) {
+  const ctx = getAudio();
+  if (!ctx) return;
+  const t0 = ctx.currentTime + start;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  gain.gain.setValueAtTime(0.0001, t0);
+  gain.gain.exponentialRampToValueAtTime(vol, t0 + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(t0);
+  osc.stop(t0 + dur + 0.05);
+}
+
+function flash(kind) {
+  const el = document.createElement("div");
+  el.className = `screen-flash ${kind}`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 750);
+}
+
+function playFirstBuzz() {
+  tone(660, 0.00, 0.12, "square", 0.10);
+  tone(880, 0.10, 0.12, "square", 0.10);
+  tone(1320, 0.20, 0.30, "triangle", 0.18);
+  flash("first");
+}
+
+function playTick() {
+  tone(520, 0, 0.08, "triangle", 0.08);
+}
+
+/* ---------- Connection ---------- */
 function setConnection(connected) {
   $("connection-label").textContent = connected ? "CONNECTED" : "RECONNECTING";
   $("connection-label").previousElementSibling.style.background = connected ? "var(--green)" : "var(--red)";
@@ -10,6 +59,7 @@ function setConnection(connected) {
 
 $("host-form").addEventListener("submit", (event) => {
   event.preventDefault();
+  getAudio(); // unlock audio on a user gesture
   $("auth-error").textContent = "";
   socket.emit("host-auth", $("host-pin").value, (result) => {
     if (!result?.ok) {
@@ -47,13 +97,20 @@ $("reset-all").addEventListener("click", () => {
 
 socket.on("connect", () => setConnection(true));
 socket.on("disconnect", () => setConnection(false));
+
 socket.on("state", (state) => {
+  const count = state.buzzes.length;
+  if (authenticated && count > lastBuzzCount) {
+    lastBuzzCount === 0 ? playFirstBuzz() : playTick();
+  }
+  lastBuzzCount = count; // always track, so unlocking never replays old buzzes
   latestState = state;
   if (authenticated) renderState(state);
 });
 
 socket.on("competition-reset", () => {
   latestState = null;
+  lastBuzzCount = 0;
 });
 
 function renderState(state) {

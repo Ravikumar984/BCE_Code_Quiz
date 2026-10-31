@@ -9,7 +9,9 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <div class="scanline"></div>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="scanline" aria-hidden="true"></div>
+
   <header class="topbar">
     <a href="/" aria-label="Buzz Control home" class="brand-link">
       <img src="logo2.png" alt="BUZZ//CTRL" class="header-logo">
@@ -18,29 +20,44 @@
       <span class="live-dot"></span>
       <span id="connection-label">CONNECTING</span>
       <span class="meta-divider">/</span>
-      <span id="round-label">ROUND 01</span>
+      <span id="round-label" class="round-badge">ROUND 01</span>
       <span class="meta-divider slash">//</span>
       <img src="bce_logo.png" alt="BCE Logo" class="header-college-logo">
     </div>
   </header>
 
   <main class="shell">
+    <!-- JOIN SCREEN -->
     <section id="join-screen" class="join-layout">
       <div class="eyebrow"><span class="eyebrow-line"></span> LIVE QUIZ PROTOCOL <span class="muted">v1.0</span></div>
       <h1>Ready.<br><span class="outline-text">Set.</span> <span class="accent-text">Buzz.</span></h1>
       <p class="intro">Enter your team handle to connect to the room. No password. No delay. Just reflexes.</p>
+
       <form id="join-form" class="join-form">
         <label for="team-name">TEAM IDENTIFIER</label>
         <div class="input-row">
           <span class="input-prefix">team://</span>
-          <input id="team-name" name="team-name" maxlength="32" autocomplete="off" placeholder="e.g. NullPointers" required>
+          <input id="team-name" name="team-name" maxlength="32" autocomplete="off" spellcheck="false" placeholder="e.g. NullPointers" required>
         </div>
-        <button class="button button-primary join-button" type="submit"><span>JOIN THE ROOM</span><span class="button-arrow">↗</span></button>
+        <button class="button button-primary join-button" type="submit">
+          <span>JOIN THE ROOM</span><span class="button-arrow">↗</span>
+        </button>
         <p id="join-error" class="error-message" role="alert"></p>
       </form>
-      <div class="join-foot"><span><span class="tiny-square"></span> OPEN SESSION</span><span>NO CREDENTIALS REQUIRED</span></div>
+
+      <ul class="how-list" aria-label="How it works">
+        <li><span class="how-num">01</span><span>Pick a unique team name</span></li>
+        <li><span class="how-num">02</span><span>Wait for the host to read the question</span></li>
+        <li><span class="how-num">03</span><span>Hit the buzzer. First press counts</span></li>
+      </ul>
+
+      <div class="join-foot">
+        <span><span class="tiny-square"></span> OPEN SESSION</span>
+        <span>NO CREDENTIALS REQUIRED</span>
+      </div>
     </section>
 
+    <!-- TEAM SCREEN -->
     <section id="team-screen" class="team-layout hidden">
       <div class="team-heading">
         <div>
@@ -51,25 +68,44 @@
       </div>
 
       <div class="buzzer-panel">
-        <div class="panel-topline"><span>INPUT // BUZZER</span><span id="buzzer-state" class="state-pill"><span class="state-dot"></span> ARMED</span></div>
+        <div class="panel-topline">
+          <span>INPUT // BUZZER</span>
+          <span id="buzzer-state" class="state-pill"><span class="state-dot"></span> ARMED</span>
+        </div>
+
         <button id="buzz-button" class="buzzer-button" type="button" aria-label="Press buzzer">
           <span class="buzzer-ring"></span>
-          <span class="bell-glyph">♢</span>
+          <span class="buzzer-ring ring-2"></span>
+          <svg class="bell-icon" viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+          </svg>
           <span class="buzzer-label">PRESS TO BUZZ</span>
           <span class="buzzer-sub">FIRST PRESS COUNTS</span>
         </button>
+
         <p id="buzz-feedback" class="buzz-feedback" aria-live="polite">Waiting for the host to read the question.</p>
       </div>
 
       <section class="ranking-section">
-        <div class="section-head"><div><span class="section-index">01 /</span> LIVE ORDER</div><span id="buzz-count" class="count-label">0 TEAMS BUZZED</span></div>
-        <div id="ranking-list" class="ranking-list"><div class="empty-state"><span class="empty-icon">⌁</span><span>No buzzes yet.</span><small>Be ready when the question drops.</small></div></div>
+        <div class="section-head">
+          <div><span class="section-index">01 /</span> LIVE ORDER</div>
+          <span id="buzz-count" class="count-label">0 TEAMS BUZZED</span>
+        </div>
+        <div id="ranking-list" class="ranking-list">
+          <div class="empty-state"><span class="empty-icon">⌁</span><span>No buzzes yet.</span><small>Be ready when the question drops.</small></div>
+        </div>
       </section>
+
       <p class="fine-print"><span class="live-dot"></span> This screen updates in real time. Keep this tab open during the round.</p>
     </section>
   </main>
 
-  <footer class="footer"><span>BUZZ//CTRL <span class="muted">© LIVE SESSION</span></span><span>BUILT FOR QUICK THINKERS <span class="accent-text">■</span></span></footer>
+  <footer class="footer">
+    <span>BUZZ//CTRL <span class="muted">© LIVE SESSION</span></span>
+    <span>BUILT FOR QUICK THINKERS <span class="accent-text">■</span></span>
+  </footer>
+
   <script src="/socket.io/socket.io.js"></script>
   <script src="/team.js"></script>
 </body>
