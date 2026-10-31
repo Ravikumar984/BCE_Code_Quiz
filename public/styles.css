@@ -27,15 +27,31 @@ body {
 }
 .scanline { position: fixed; inset: 0; pointer-events: none; z-index: 5; opacity: .09; background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.28) 4px); }
 
-/* Updated Header & Logo Styles */
-.topbar { min-height: 84px; border-bottom: 1px solid var(--line); padding: 16px clamp(20px, 5vw, 76px); display: flex; align-items: center; justify-content: space-between; gap: 20px; position: relative; z-index: 2; background: rgba(11,14,17,.84); }
+/* Updated Header & Main Logo Styles */
+.topbar { min-height: 104px; border-bottom: 1px solid var(--line); padding: 16px clamp(20px, 5vw, 76px); display: flex; align-items: center; justify-content: space-between; gap: 20px; position: relative; z-index: 2; background: rgba(11,14,17,.84); }
 .brand-link { display: block; flex-shrink: 0; }
-.header-logo { height: 52px; width: auto; display: block; }
+.header-logo { height: 72px; width: auto; display: block; }
+.slash { color: var(--green); }
 
 .top-meta, .join-foot, .footer { font: 10px var(--mono); letter-spacing: .09em; color: #a2adb4; }
 .top-meta { display: flex; align-items: center; gap: 10px; }
 .live-dot { display: inline-block; width: 6px; height: 6px; background: var(--green); border-radius: 50%; box-shadow: 0 0 9px rgba(181,255,93,.5); }
 .meta-divider { color: #47525b; }
+
+/* Enhanced College Logo Styles */
+.header-college-logo { 
+  height: 26px; 
+  width: auto; 
+  filter: grayscale(1) opacity(0.7); 
+  margin-left: 4px; 
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+.header-college-logo:hover { 
+  filter: grayscale(0) opacity(1); 
+  box-shadow: 0 0 12px rgba(181, 255, 93, 0.4);
+}
+
 .shell { width: min(100% - 40px, 920px); margin: 0 auto; flex: 1; padding: 70px 0 64px; position: relative; z-index: 1; }
 .join-layout { max-width: 580px; margin: 10px auto 0; }
 .eyebrow { display: flex; align-items: center; gap: 10px; color: var(--green); font: 10px var(--mono); letter-spacing: .13em; }
@@ -123,8 +139,9 @@ code { color: var(--green); font: inherit; }
 
 /* Updated Mobile Media Query */
 @media (max-width: 560px) {
-  .topbar { min-height: 72px; padding: 12px 17px; }
-  .header-logo { height: 38px; }
+  .topbar { min-height: 84px; padding: 12px 17px; }
+  .header-logo { height: 54px; }
+  .header-college-logo { height: 20px; }
   .top-meta { font-size: 8px; gap: 7px; }
   .shell { width: min(100% - 34px, 920px); padding-top: 49px; }
   .join-layout { margin-top: 0; }
